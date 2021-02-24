@@ -1,21 +1,42 @@
 import React, { useState } from 'react';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
-import { StyleSheet, View, Text, Dimensions, Image, TextInput } from 'react-native';
-import { Feather } from '@expo/vector-icons'
-
-import logoAccenture from '../images/Accenture.png'
-
+import { StyleSheet, View, Text, Dimensions, Image, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
+
+import logoAccenture from '../images/Accenture.png';
+import { contactSend } from '../service'
+
 
 export default function Contact(){
     const [ name, setName ] = useState('')
     const [ email, setEmail ] = useState('')
     const [ phone, setPhone ] = useState('')
     const [ text, setText ] = useState('')
-    // const [ isSendMessage, setIsSendMessage ] = useState(true)
+    const [ isSendMessage, setIsSendMessage ] = useState(false)
+
+    function sendAccentureMessage(){
+        const postData = {
+            name,
+            email,
+            phone,
+            text
+        };
+        contactSend.post('', postData).then(
+            response => {
+                setIsSendMessage(true);
+                setName('');
+                setEmail('');
+                setPhone('');
+                setText('');
+            }
+        )
+    }
   return (
       <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
+        <KeyboardAvoidingView
+            behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+            style={styles.container}>
 
             { isSendMessage ? (
                 <>
@@ -39,21 +60,29 @@ export default function Contact(){
                     <Text style={styles.labelForm}> Seu nome:  </Text>
                     <TextInput
                         style={styles.inputForm}
+                        value={name}
+                        onChangeText={ text => setName(text) }
                     />
                     <Text style={styles.labelForm}> Seu telefone:  </Text>
                     <TextInput
                         style={styles.inputForm}
+                        value={phone}
+                        onChangeText={ text => setPhone(text) }
                     />
                     <Text style={styles.labelForm}> Seu email:  </Text>
                     <TextInput
                         style={styles.inputForm}
+                        value={email}
+                        onChangeText={ text => setEmail(text) }
                     />
                     <Text style={styles.labelForm}> Deixe sua mensagem:  </Text>
                     <TextInput
                         style={styles.inputFormMultiline}
+                        value={text}
+                        onChangeText={ text => setText(text) }
                         multiline
                     />
-                    <RectButton style={styles.sendButton}>
+                    <RectButton style={styles.sendButton} onPress={ sendAccentureMessage }>
                         <Text style={styles.textSendButton} >Enviar mensagem</Text>
                         <Feather name="send" size={20} color="#A100FF"/>
                     </RectButton>
@@ -63,7 +92,7 @@ export default function Contact(){
 
             )}
             
-        </View>
+        </KeyboardAvoidingView>
       </ScrollView>
   );
 }

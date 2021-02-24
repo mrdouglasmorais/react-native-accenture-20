@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const contactSend = axios.create({
-    baseURL: 'https://webhook.site/03f39df9-7bde-4f2e-ae57-6f437dd3bf29'
+    baseURL: 'https://webhook.site/bacbf635-3749-437c-a703-82e77e146816'
 })
 
 export const getData = axios.create({
